@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import renderer from 'react-test-renderer';
+import { act } from 'react-dom/test-utils';
+import renderer from 'react-test-renderer'; // Jest
 
 import { withProfiler } from 'jest-react-profiler';
 
@@ -27,18 +28,35 @@ describe('App', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  // test('performance with Jest', () => {
+  // Doesn't commit ...
+
+  // test('Jest', () => {
   //   renderer.create(<AppWithProfiler title="Hello World" />);
 
   //   expect(AppWithProfiler).toHaveCommittedTimes(1);
   // });
 
-  test('performance with React Utils', () => {
-    ReactDOM.render(
-      <AppWithProfiler title="Hello World" />,
-      container
-    );
+  test('React Utils', () => {
+    act(() => {
+      ReactDOM.render(
+        <AppWithProfiler title="Hello World" />,
+        container
+      );
+    });
 
+    const paragraph = container.querySelector('p');
+    const button = container.querySelector('button');
+
+    expect(paragraph.textContent).toBe('0');
     expect(AppWithProfiler).toHaveCommittedTimes(1);
+
+    act(() => {
+      button.dispatchEvent(
+        new MouseEvent('click', { bubbles: true })
+      );
+    });
+
+    expect(paragraph.textContent).toBe('1');
+    // expect(AppWithProfiler).toHaveCommittedTimes(2); // doesn't work
   });
 });

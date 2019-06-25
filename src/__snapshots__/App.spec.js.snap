@@ -5,5 +5,14 @@ exports[`App renders App 1`] = `
   <h1>
     Hello World
   </h1>
+  <p>
+    0
+  </p>
+  <button
+    onClick={[Function]}
+    type="button"
+  >
+    Increase
+  </button>
 </div>
 `;
